@@ -2,6 +2,8 @@ from rich.console import Console
 from rich.panel import Panel
 from InquirerPy import inquirer
 
+from funciones.gestion_usuarios import menu_gestion_usuarios
+
 console = Console()
 
 def mostrar_menu_admin(user_info):
@@ -10,30 +12,26 @@ def mostrar_menu_admin(user_info):
   # Bucle principal del menú
   while True:
     console.print(Panel(f"[bold white]Menú Principal de Administrador[/bold white]",
-      title=f"Bienvenido, {user_info.get('nombre', 'Admin')}", expand=False))
+      title=f"Bienvenido, {user_info.get('nombre')}", expand=False))
 
     opcion = inquirer.select(
       message="Tareas de Administración:",
       choices=[
-        "Gestión de Usuarios (Empleados)",
-        "Gestión de Servicios y Productos",
-        "Ver Reportes de Ventas",
-        "Cerrar Sesión"
+        "👥 Gestión de Usuarios",
+        "💇 Gestión de Servicios",
+        "📊 Ver Reportes de Ventas",
+        "🚪 Cerrar Sesión"
       ]
     ).execute()
 
-    if opcion == "Gestión de Usuarios (Empleados)":
-      # Aquí llamarías a una función o clase para gestionar usuarios
-      console.print("[yellow]--- Accediendo a Gestión de Usuarios ---[/yellow]")
-      pass
-    
-    elif opcion == "Gestión de Servicios y Productos":
-      # Aquí llamarías a la lógica de CRUD para Servicios/Productos
-      console.print("[yellow]--- Accediendo a Gestión de Servicios/Productos ---[/yellow]")
-      pass
-
-    elif opcion == "Cerrar Sesión":
-      console.print("[bold cyan]Cerrando sesión de Administrador.[/bold cyan]")
+    if opcion.startswith("👥"):
+      menu_gestion_usuarios()
+    elif opcion.startswith("💇"):
+      menu_gestion_servicios()
+    elif opcion.startswith("📊"):
+      menu_reportes()
+    elif opcion.startswith("🚪"):
+      console.print("[bold cyan]Cerrando sesión de Administrador...[/bold cyan]")
       break # Sale del bucle While y regresa a main.py (que luego hace exit())
 
     # Puedes añadir una pausa entre acciones si lo deseas

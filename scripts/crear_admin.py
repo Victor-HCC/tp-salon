@@ -17,7 +17,7 @@ def crear_admin():
   
   cursor = conn.cursor()
 
-  cursor.execute("SELECT COUNT(*) FROM Empleado WHERE rol = 'admin'")
+  cursor.execute("SELECT COUNT(*) FROM Usuario WHERE rol = 'admin'")
   existe = cursor.fetchone()[0]
   
   if existe > 0:
@@ -29,7 +29,7 @@ def crear_admin():
     admin_password = ModeloBase._hash_password(os.getenv("ADMIN_PASSWORD"))
 
     query = """
-    INSERT INTO Empleado (nombre, apellido, email, password_hash, rol)
+    INSERT INTO Usuario (nombre, apellido, email, password_hash, rol)
     VALUES (%s, %s, %s, %s, %s)
     """
     cursor.execute(query, (admin_nombre, admin_apellido, admin_email, admin_password, "admin"))

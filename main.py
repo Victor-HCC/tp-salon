@@ -1,11 +1,11 @@
 from rich.console import Console
 from rich.panel import Panel
-from rich.prompt import Prompt
 from InquirerPy import inquirer
 
-from modelos.modelo_base import ModeloBase
 
 from menus.menu_admin import mostrar_menu_admin
+
+from funciones.login import autenticar
 
 console = Console()
 
@@ -21,11 +21,8 @@ opcion = inquirer.select(
 
 
 if opcion == "Acceder":
-  console.print("[bold]Ingresa tus credenciales: [/bold]")
-  email = input("Email: ")
-  password = Prompt.ask("Contraseña", password=True)
   
-  user_info = ModeloBase.autenticar(email, password)
+  user_info = autenticar()
   print(user_info)
   
   if user_info:
@@ -36,10 +33,12 @@ if opcion == "Acceder":
       mostrar_menu_admin(user_info) # Llama a la función del menú de admin
     elif rol == 'recepcionista':
       mostrar_menu_recepcionista(user_info) # Llama al menú de recepcionista TO-DO
-    # ... Añadir más 'elif' para 'cajero', 'cliente', etc.
+    elif rol == 'cajero':
+      mostrar_menu_cajero(user_info)
+    elif rol == 'cliente':
+      mostrar_menu_cliente(user_info)
     else:
       console.print("[bold yellow]Rol no reconocido o menú no implementado.[/bold yellow]")
-      
   else:
     console.print("[bold red]Error de autenticación. Email o contraseña incorrectos.[/bold red]")
     

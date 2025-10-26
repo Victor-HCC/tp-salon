@@ -15,10 +15,6 @@ class ModeloBase:
     "database": os.getenv("DB_NAME")
   }
   
-  TABLA = {
-    "Empleado": "Empleado"
-  }
-  
   @staticmethod
   def _hash_password(password: str) -> str:
     return pwd_context.hash(password)
@@ -80,7 +76,7 @@ class ModeloBase:
   @classmethod
   def autenticar(cls, email, password):
     # obtener usuario por email
-    rows = cls.ejecutar(f"SELECT id, password_hash, rol FROM {cls.TABLA["Empleado"]} WHERE email = %s", (email,), fetch=True, dict_cursor=True)
+    rows = cls.ejecutar(f"SELECT * FROM Usuario WHERE email = %s", (email,), fetch=True, dict_cursor=True)
     if not rows:
       return None  # usuario no existe
 
@@ -88,5 +84,5 @@ class ModeloBase:
     password_hash = usuario["password_hash"]
     # verificar con passlib
     if pwd_context.verify(password, password_hash):
-      return {"id": usuario["id"], "rol": usuario["rol"]}
+      return {"id": usuario["id"], "nombre": usuario["nombre"], "apellido": usuario["apellido"], "email": usuario["email"], "rol": usuario["rol"]}
     return None
