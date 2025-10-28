@@ -20,7 +20,8 @@ CREATE TABLE Servicio (
   nombre VARCHAR(100) NOT NULL,
   descripcion TEXT,
   precio DECIMAL(10, 2) NOT NULL, -- Uso de DECIMAL para precisión monetaria
-  duracion_estimada INT NOT NULL -- En minutos
+  duracion_estimada INT NOT NULL, -- En minutos
+  activo BOOLEAN DEFAULT TRUE
 );
 
 -- -----------------------------------------------------------
@@ -29,14 +30,12 @@ CREATE TABLE Servicio (
 CREATE TABLE Turno (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL,
-  empleado_id INT NULL, -- El empleado (peluquero) asignado al turno
   fecha_hora DATETIME NOT NULL,
   estado ENUM('pendiente', 'confirmado', 'cancelado', 'realizado') NOT NULL DEFAULT 'pendiente',
   pagado BOOLEAN DEFAULT FALSE,
   total DECIMAL(10, 2) DEFAULT 0.00, -- Puede ser calculado por la aplicación o trigger
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-  FOREIGN KEY (cliente_id) REFERENCES Usuario(id) ON DELETE RESTRICT,
-  FOREIGN KEY (empleado_id) REFERENCES Usuario(id) ON DELETE SET NULL
+  FOREIGN KEY (cliente_id) REFERENCES Usuario(id) ON DELETE RESTRICT
 );
 
 -- -----------------------------------------------------------

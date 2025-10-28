@@ -61,3 +61,8 @@ class Usuario(ModeloBase):
   def desactivar(cls, usuario_id):
     query = "UPDATE Usuario SET activo = FALSE WHERE id = %s"
     return cls.ejecutar(query, (usuario_id,))
+  
+  @classmethod
+  def cambiar_password(cls, password, usuario_id):
+    query = "UPDATE Usuario SET password_hash = %s WHERE id = %s"
+    return cls.ejecutar(query, (password, usuario_id,), last_id=True)

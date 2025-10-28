@@ -2,8 +2,24 @@ import re
 from InquirerPy import inquirer
 from rich.console import Console
 from rich.table import Table
+from datetime import datetime, timedelta
+
+import locale
 
 console = Console()
+
+# --- Configuración Regional a Español ---
+try:
+  # Intenta establecer un locale común en sistemas Unix/Linux
+  locale.setlocale(locale.LC_TIME, 'es_ES.UTF-8')
+except locale.Error:
+  try:
+    # Intenta un locale común en Windows
+    locale.setlocale(locale.LC_TIME, 'Spanish_Spain.1252')
+  except locale.Error:
+    # Si ambos fallan, usa una opción genérica (puede ser menos confiable)
+    locale.setlocale(locale.LC_TIME, 'es')
+# Si la configuración regional falla en el sistema, los nombres pueden seguir en inglés.
 
 def validar_nombre(texto: str) -> bool:
   """
@@ -28,7 +44,6 @@ def validar_nombre(texto: str) -> bool:
   else:
     return False
 
-
 def validar_email(email: str) -> bool:
   """
   Valida el formato de una cadena como dirección de correo electrónico 
@@ -48,9 +63,6 @@ def validar_email(email: str) -> bool:
     return True
   else:
     return False
-
-
-import re
 
 def validar_password(password: str) -> bool:
   """
@@ -97,12 +109,14 @@ def obtener_entrada_valida(message, validator_func, error_message, is_secret=Fal
   El valor por defecto (default) permite al usuario presionar Enter para aceptarlo.
   """
   
+  default_str = default if default is not None else ""
+  
   while True:
     # 1. Determinar el prompt a usar (secret o text) y aplicar el default.
     if is_secret:
-      entrada = inquirer.secret(message=message, default=default).execute().strip()
+      entrada = inquirer.secret(message=message, default=default_str).execute().strip()
     else:
-      entrada = inquirer.text(message=message, default=default).execute().strip()
+      entrada = inquirer.text(message=message, default=default_str).execute().strip()
         
     # 2. Lógica de Manejo de la Entrada
     
@@ -147,3 +161,79 @@ def mostrar_tabla(titulo, data):
     tabla.add_row(*[str(v) for v in fila.values()])
 
   console.print(tabla)
+  
+def seleccionar_dia_y_hora():
+  """
+  Permite al usuario seleccionar un día y una hora válidos para un turno.
+  
+  Restricciones:
+  - Próximos 5 días (excluyendo el día actual).
+  - Días laborales: Lunes a Sábado (excluyendo Domingo).
+  - Horario: 9:00 a 18:00 (en punto).
+  
+  Returns:
+    datetime.datetime: La fecha y hora seleccionada, o None si se cancela.
+  """
+  
+  # --- 1. Generar Opciones de Días Válidos ---
+  
+  dias_validos = {} # { "Lunes 28/10": datetime.date(2025, 10, 28), ... }
+  hoy = datetime.now().date()
+  
+  # Iterar sobre los próximos 5 días, empezando mañana (i=1)
+  for i in range(1, 6):
+    fecha = hoy + timedelta(days=i)
+    
+    # 0=Lunes, 6=Domingo. Excluimos el Domingo (fecha.weekday() == 6).
+    if fecha.weekday() < 6:
+      # Formato de presentación: "Lunes 28/10"
+      nombre_dia = fecha.strftime("%A") 
+      display_fecha = fecha.strftime("%d/%m")
+      
+      # Formato de la opción en la CLI
+      opcion_key = f"{nombre_dia} {display_fecha}"
+      dias_validos[opcion_key] = fecha
+
+  try:
+    # Pide al usuario que seleccione el día
+    dia_seleccionado_str = inquirer.select(
+      message="Selecciona el día para el turno:",
+      choices=list(dias_validos.keys())
+    ).execute()
+    
+    # Obtener el objeto date real a partir de la selección string
+    fecha_seleccionada = dias_validos[dia_seleccionado_str]
+      
+  except KeyboardInterrupt:
+    console.print("[yellow]Selección de día cancelada.[/yellow]")
+    return None
+
+
+  # --- 2. Generar Opciones de Horas Válidas ---
+
+  horas_choices = []
+  # Generar horas desde las 9:00 hasta las 18:00
+  for hora in range(9, 19): 
+    # Formato de hora: "09:00", "15:00", "18:00"
+    horas_choices.append(f"{hora:02d}:00")
+
+  try:
+    # Pide al usuario que seleccione la hora
+    hora_seleccionada_str = inquirer.select(
+      message=f"Selecciona la hora para el {dia_seleccionado_str}:",
+      choices=horas_choices
+    ).execute()
+      
+  except KeyboardInterrupt:
+    console.print("[yellow]Selección de hora cancelada.[/yellow]")
+    return None
+      
+  # --- 3. Combinar y Retornar ---
+  
+  # Combina la fecha (date) con la hora (time)
+  hora_obj = datetime.strptime(hora_seleccionada_str, "%H:%M").time()
+  fecha_hora_final = datetime.combine(fecha_seleccionada, hora_obj)
+  
+  return fecha_hora_final
+
+

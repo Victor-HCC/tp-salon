@@ -34,3 +34,9 @@ pip install -r requirements.txt
 ```bash
 python3 scripts/crear_admin.py 
 ```
+
+### Cargar datos de prueba en la base de datos
+
+```bash
+mysql -u root -p salon_db < scripts/data_test.sql 
+```

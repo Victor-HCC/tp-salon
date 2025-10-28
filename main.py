@@ -4,6 +4,7 @@ from InquirerPy import inquirer
 
 
 from menus.menu_admin import mostrar_menu_admin
+from menus.menu_cliente import mostrar_menu_cliente
 
 from funciones.login import autenticar
 
