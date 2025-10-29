@@ -15,7 +15,7 @@ class Servicio(ModeloBase):
   @classmethod
   def listar_todos(cls):
     """Obtiene todos los servicios."""
-    query = f"SELECT * FROM {cls.TABLA} WHERE activo = True"
+    query = f"SELECT * FROM {cls.TABLA}"
     return cls.ejecutar(query, fetch=True, dict_cursor=True)
 
   @classmethod
@@ -26,14 +26,14 @@ class Servicio(ModeloBase):
     return rows[0] if rows else None
 
   @classmethod
-  def actualizar(cls, servicio_id, nombre, descripcion, precio, duracion_estimada):
+  def actualizar(cls, servicio_id, nombre, descripcion, precio, duracion_estimada, activo):
     """Edita los datos de un servicio."""
     query = f"""
       UPDATE {cls.TABLA}
-      SET nombre = %s, descripcion = %s, precio = %s, duracion_estimada = %s
+      SET nombre = %s, descripcion = %s, precio = %s, duracion_estimada = %s, activo = %s
       WHERE id = %s
     """
-    return cls.ejecutar(query, (nombre, descripcion, precio, duracion_estimada, servicio_id))
+    return cls.ejecutar(query, (nombre, descripcion, precio, duracion_estimada, activo, servicio_id))
 
   @classmethod
   def desactivar(cls, servicio_id):

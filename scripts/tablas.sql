@@ -31,9 +31,9 @@ CREATE TABLE Turno (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL,
   fecha_hora DATETIME NOT NULL,
-  estado ENUM('pendiente', 'confirmado', 'cancelado', 'realizado') NOT NULL DEFAULT 'pendiente',
+  estado ENUM('pendiente', 'confirmado', 'cancelado') NOT NULL DEFAULT 'pendiente',
   pagado BOOLEAN DEFAULT FALSE,
-  total DECIMAL(10, 2) DEFAULT 0.00, -- Puede ser calculado por la aplicación o trigger
+  total DECIMAL(10, 2) DEFAULT 0.00,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES Usuario(id) ON DELETE RESTRICT
 );

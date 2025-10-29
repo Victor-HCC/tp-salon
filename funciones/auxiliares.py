@@ -3,6 +3,7 @@ from InquirerPy import inquirer
 from rich.console import Console
 from rich.table import Table
 from datetime import datetime, timedelta
+from decimal import Decimal, InvalidOperation
 
 import locale
 
@@ -39,6 +40,35 @@ def validar_nombre(texto: str) -> bool:
 
   regex = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]{2,}$"
   
+  if re.fullmatch(regex, texto):
+    return True
+  else:
+    return False
+
+def validar_nombre_servicio(texto: str) -> bool:
+  """
+  Valida si una cadena de texto (nombre de un servicio) es válida.
+  
+  Criterios:
+  1. Mínimo 2 caracteres de longitud.
+  2. Permite letras (mayúsculas, minúsculas, acentuadas, ñ).
+  3. Permite espacios.
+  4. Permite números (opcional, pero útil para servicios).
+      
+  Args:
+    texto: El nombre del servicio a validar.
+      
+  Returns:
+    True si la cadena es válida, False en caso contrario.
+  """
+  # Expresión regular:
+  # ^[...]$ -> Coincidencia exacta de principio a fin.
+  # [a-zA-ZáéíóúÁÉÍÓÚñÑüÜ] -> Letras.
+  # \s -> Espacios.
+  # 0-9 -> Números (opcional, puedes quitarlo si no quieres números).
+  # {2,} -> Mínimo 2 caracteres de longitud total.
+  regex = r"^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s0-9]{2,}$"
+
   if re.fullmatch(regex, texto):
     return True
   else:
@@ -236,4 +266,64 @@ def seleccionar_dia_y_hora():
   
   return fecha_hora_final
 
+def validar_precio(texto: str) -> bool:
+  """
+  Valida si una cadena de texto representa un precio válido (número positivo).
+  
+  Criterios:
+  1. No puede estar vacío (precio obligatorio).
+  2. Debe ser convertible a un número (entero o decimal).
+  3. Debe ser mayor o igual a 0.
+      
+  Args:
+    texto: La entrada de texto del usuario.
+      
+  Returns:
+    True si es un precio válido, False en caso contrario.
+  """
+    
+  try:
+    # Intentar convertir a Decimal (para manejar precisión)
+    # Reemplazamos coma por punto si se usa la notación decimal europea
+    precio_decimal = Decimal(texto.replace(',', '.'))
+    
+    # Verificar que sea un valor no negativo
+    if precio_decimal >= 0:
+      return True
+    else:
+      return False
+      
+  except InvalidOperation:
+    # Captura errores si el texto no es un número válido (ej: "abc", "10..0")
+    return False
 
+def validar_duracion(texto: str) -> bool:
+  """
+  Valida si una cadena de texto representa una duración válida en minutos.
+  
+  Criterios:
+  1. No puede estar vacío (duración obligatoria).
+  2. Debe ser convertible a un NÚMERO ENTERO.
+  3. Debe ser un valor estrictamente POSITIVO (> 0).
+      
+  Args:
+    texto: La entrada de texto del usuario.
+      
+  Returns:
+    True si la duración es válida, False en caso contrario.
+  """
+    
+  try:
+    # Intentar convertir a ENTERO (int)
+    # Esto automáticamente falla si el texto contiene decimales o caracteres no numéricos
+    duracion_int = int(texto) 
+    
+    # Verificar que sea un valor estrictamente positivo (un servicio debe durar algo)
+    if duracion_int > 0:
+      return True
+    else:
+      return False
+      
+  except ValueError:
+    # Captura errores si la conversión a int falla (ej: "abc", "10.5", "5,5")
+    return False

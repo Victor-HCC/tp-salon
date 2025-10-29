@@ -9,9 +9,9 @@ console = Console()
 def verificar_email_unico(email):
   if Usuario.obtener_por_email(email):
     console.print(f"[yellow]Ya existe una cuenta con ese email.[/yellow]")
-    return True
-  else:
     return False
+  else:
+    return True
 
 def crear_usuario():
   console.print("[bold green]--- Crear nuevo usuario ---[/bold green]")
@@ -54,7 +54,7 @@ def crear_usuario():
   ).execute()
 
   # Verificación de email duplicado
-  if verificar_email_unico(email): return
+  if not verificar_email_unico(email): return
 
   try:
     nuevo_id = Usuario.crear(nombre, apellido, email, password, rol)
@@ -140,8 +140,8 @@ def editar_usuario():
     default=usuario_actual['email']
   ).lower()
   
-  if nuevo_email != usuario_actual['email']:
-    datos_nuevos['email'] = nuevo_email
+  # if nuevo_email != usuario_actual['email']:
+  #   datos_nuevos['email'] = nuevo_email
 
   # Rol (Usando select con el valor actual como default)
   roles = ["admin", "recepcionista", "cajero", "cliente"]
@@ -155,8 +155,9 @@ def editar_usuario():
     datos_nuevos['rol'] = nuevo_rol
     
   # Verificación de email duplicado
-  ## VERIFICAR SOLO CUANDO  SE CAMBIA EL EMAIL!!!!!!!!!!!!
-  if verificar_email_unico(nuevo_email): return
+  if nuevo_email != usuario_actual['email']:
+    datos_nuevos['email'] = nuevo_email
+    if not verificar_email_unico(nuevo_email): return
       
   # --- PASO 3: Actualizar ---
   
@@ -196,7 +197,9 @@ def listar_usuarios():
     data = Usuario.listar_clientes()
     titulo = "Clientes Registrados"
   
+  console.print()
   mostrar_tabla(titulo, data)
+  console.print()
 
 def desactivar_usuario():
   console.print("[bold yellow]--- Desactivar usuario ---[/bold yellow]")

@@ -24,10 +24,10 @@ opcion = inquirer.select(
 if opcion == "Acceder":
   
   user_info = autenticar()
-  print(user_info)
   
   if user_info:
     rol = user_info.get('rol') # Obtener el rol del diccionario retornado
+    console.print()
     console.print(f"[bold green]Acceso concedido. Rol: {rol.upper()}[/bold green]")
     
     if rol == 'admin':

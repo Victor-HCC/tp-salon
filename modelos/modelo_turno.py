@@ -45,7 +45,7 @@ class Turno(ModeloBase):
     query = f'''SELECT T.id, T.fecha_hora, T.total, GROUP_CONCAT(S.nombre SEPARATOR ', ') AS servicios
       FROM {cls.TABLA} T JOIN Turno_Servicio TS ON T.id = TS.turno_id
       JOIN Servicio S ON TS.servicio_id = S.id
-      WHERE T.cliente_id = %s
+      WHERE T.cliente_id = %s AND T.estado = 'pendiente'
       GROUP BY T.id, T.fecha_hora, T.total
       ORDER BY T.fecha_hora ASC'''
       

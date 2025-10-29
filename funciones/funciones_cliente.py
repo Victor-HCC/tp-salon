@@ -105,6 +105,7 @@ def solicitar_turno(user_id):
   turno_final = seleccionar_dia_y_hora()
   if not turno_final:
     console.print("[red]Proceso de turno abortado.[/red]")
+    print()
     return
   
   console.print(f"[green]Turno:[/green] {turno_final.strftime('%A %d/%m/%Y a las %H:%M')}")
@@ -205,63 +206,53 @@ def listar_turnos_cliente(user_id):
   console.print() 
   
 def cancelar_turno(user_id):
-  # 1. Obtener todos los turnos del cliente
+  # Obtener todos los turnos del cliente
   turnos = Turno.listar_para_cliente(user_id)
   
   if not turnos:
-    console.print("[bold yellow]No tienes turnos registrados para cancelar.[/bold yellow]")
-    return
-  
-  # 2. Filtrar solo turnos FUTUROS y PENDIENTES/CONFIRMADOS
-  turnos_disponibles = [
-    t for t in turnos 
-    if t['fecha_hora'] > datetime.now() and t['estado'] in ('pendiente', 'confirmado')
-  ]
-  
-  if not turnos_disponibles:
-    console.print("[bold yellow]No tienes turnos futuros o confirmados que se puedan cancelar.[/bold yellow]")
+    console.print("[bold yellow]No tienes turnos registrados.[/bold yellow]")
     return
   
   console.print(Rule(title="Selecciona Turno a Cancelar", style="bold red"))
   
-  # 3. Preparar opciones para InquirerPy
+  # Preparar opciones para InquirerPy
   opciones_mapeadas = {} # Mapea la etiqueta de display al ID del turno
   choices = []
   
-  for turno in turnos_disponibles:
+  for turno in turnos:
     fecha_str = turno['fecha_hora'].strftime("%A %d/%m/%Y a las %H:%M")
     
     # Etiqueta de presentación: Fecha, Servicios (truncado) y Total
-    servicios_resumen = turno['servicios_nombres'].split(', ')[0] # Solo el primer servicio para brevedad
-    display_label = f"[{turno['estado'].capitalize()}] {fecha_str} | {servicios_resumen} | Total: ${float(turno['total']):.2f}"
+    servicios_resumen = turno['servicios'].split(', ')[0] # Solo el primer servicio para brevedad
+    display_label = f"{fecha_str} | {servicios_resumen} | Total: ${float(turno['total']):.2f}"
     
     choices.append(display_label)
     opciones_mapeadas[display_label] = turno['id'] # Guardamos el ID del turno
       
   try:
-    # 4. Seleccionar el turno
+    # Seleccionar el turno
     turno_seleccionado_str = inquirer.select(
-        message="Elige el turno que deseas cancelar:",
-        choices=choices
+      message="Elige el turno que deseas cancelar:",
+      choices=choices
     ).execute()
     
     turno_id_a_cancelar = opciones_mapeadas[turno_seleccionado_str]
     
-    # 5. Pedir confirmación
+    # Pedir confirmación
     console.print()
     confirmacion = inquirer.confirm(
-        message=f"¿Estás seguro de que deseas cancelar el turno:\n{turno_seleccionado_str}?"
+      message=f"¿Estás seguro de que deseas cancelar el turno:\n{turno_seleccionado_str}?"
     ).execute()
     
     if confirmacion:
-      # 6. Ejecutar la cancelación en la base de datos
-      Turno.cancelar(turno_id_a_cancelar) # Asume que tienes este método en el modelo
+      # Cambiar estado en la base de datos
+      Turno.actualizar_estado(turno_id_a_cancelar, 'cancelado') 
       console.print(f"\n[bold green]✅ Turno #{turno_id_a_cancelar} cancelado con éxito.[/bold green]")
+      console.print()
     else:
       console.print("\n[bold yellow]Operación de cancelación abortada por el usuario.[/bold yellow]")
+      console.print()
 
   except KeyboardInterrupt:
     console.print("\n[yellow]Operación interrumpida por el usuario.[/yellow]")
     return
-
-# Ver si agregar un filtro en la funcion para buscar los turnos en el modelo
