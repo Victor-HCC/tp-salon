@@ -102,7 +102,9 @@ def seleccionar_servicios(servicios: list) -> list:
 
 def solicitar_turno(user_id):
   # Selecciona dia y hora
-  turno_final = seleccionar_dia_y_hora()
+  dia_hora_ocupados = Turno.listar_ocupados(estado='pendiente')
+  
+  turno_final = seleccionar_dia_y_hora(dia_hora_ocupados)
   if not turno_final:
     console.print("[red]Proceso de turno abortado.[/red]")
     print()

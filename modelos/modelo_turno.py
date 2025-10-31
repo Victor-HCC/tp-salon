@@ -40,6 +40,27 @@ class Turno(ModeloBase):
     return cls.ejecutar(base_query, params, fetch=True, dict_cursor=True)
 
   @classmethod
+  def listar_ocupados(cls, estado=None):
+    """Devuelve una lista de turnos en fecha y hora separados con un determinado estado."""
+    base_query = f"""
+      SELECT DATE_FORMAT(t.fecha_hora, '%Y-%m-%d') fecha, hour(t.fecha_hora) hora 
+      FROM {cls.TABLA} t
+    """
+    filtros = []
+    params = []
+
+    if estado:
+      filtros.append("t.estado = %s")
+      params.append(estado)
+
+    if filtros:
+      base_query += " WHERE " + " AND ".join(filtros)
+
+    base_query += " ORDER BY t.fecha_hora DESC"
+
+    return cls.ejecutar(base_query, params, fetch=True, dict_cursor=True)
+
+  @classmethod
   def listar_para_cliente(cls, cliente_id):
     # Devuelve la lista de turnos pendientes del cliente
     query = f'''SELECT T.id, T.fecha_hora, T.total, GROUP_CONCAT(S.nombre SEPARATOR ', ') AS servicios

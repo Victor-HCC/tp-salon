@@ -192,7 +192,7 @@ def mostrar_tabla(titulo, data):
 
   console.print(tabla)
   
-def seleccionar_dia_y_hora():
+def seleccionar_dia_y_hora(data_horas_ocupadas=None):
   """
   Permite al usuario seleccionar un día y una hora válidos para un turno.
   
@@ -233,17 +233,24 @@ def seleccionar_dia_y_hora():
     
     # Obtener el objeto date real a partir de la selección string
     fecha_seleccionada = dias_validos[dia_seleccionado_str]
-      
+    print(fecha_seleccionada)
   except KeyboardInterrupt:
     console.print("[yellow]Selección de día cancelada.[/yellow]")
     return None
 
 
   # --- 2. Generar Opciones de Horas Válidas ---
-
+  print(data_horas_ocupadas)
+  # Obtengo 'hora' donde 'fecha' es la fecha seleccionada
+  horas_ocupadas = [item['hora'] for item in data_horas_ocupadas if item['fecha'] == str(fecha_seleccionada)]
   horas_choices = []
+  print(horas_ocupadas)
   # Generar horas desde las 9:00 hasta las 18:00
   for hora in range(9, 19): 
+    # Si la hora está ocupada, la salto
+    if hora in horas_ocupadas:
+      continue
+    
     # Formato de hora: "09:00", "15:00", "18:00"
     horas_choices.append(f"{hora:02d}:00")
 
