@@ -209,3 +209,6 @@ __marimo__/
 
 # VS CODE
 /.vscode
+
+# Tickets pdf generados
+/tickets

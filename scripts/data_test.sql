@@ -33,7 +33,7 @@ INSERT INTO Usuario (nombre, apellido, email, password_hash, rol) VALUES
 -- 2. Servicios Ofrecidos
 -- -----------------------------------------------------------
 
-INSERT INTO Servicio (nombre, descripcion, precio, duracion_estimada) VALUES
+INSERT INTO Servicio (nombre, descripcion, precio, duracion_estimada, activo) VALUES
 ('Corte de Pelo Caballero', 'Corte clásico con lavado.', 8000.00, 30, 1),
 ('Corte de Pelo Dama', 'Corte, secado y peinado.', 12000.00, 45, 1),
 ('Coloración Raíz', 'Aplicación de tintura solo en la raíz.', 25000.00, 60, 1),
@@ -48,7 +48,7 @@ INSERT INTO Servicio (nombre, descripcion, precio, duracion_estimada) VALUES
 
 -- Insertar el Turno (primero el registro principal)
 INSERT INTO Turno (cliente_id, fecha_hora, estado, total) VALUES
-(7, '2025-11-01 10:00:00', 'confirmado', 800.00); -- Asumimos que el corte cuesta 800.00
+(7, '2025-11-05 10:00:00', 'pendiente', 800.00); -- Asumimos que el corte cuesta 800.00
 
 -- Insertar el Servicio asociado al Turno (asumiendo que Corte Caballero tiene ID: 1)
 -- NOTA: Debes verificar los IDs de los servicios insertados en tu BD.

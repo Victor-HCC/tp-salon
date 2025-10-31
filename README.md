@@ -15,7 +15,7 @@ python3 -m venv venv  # O 'python'
 ```bash
 source venv/bin/activate # Ubuntu
 
-.\venv\Scripts\Activate.ps1 # Windows
+.\venv\Scripts\Activate # Windows
 ```
 
 ### Desactivar entorno virtual

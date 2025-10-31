@@ -38,6 +38,41 @@ class Usuario(ModeloBase):
     query = f"SELECT id, nombre, apellido, email, rol, activo FROM {cls.TABLA} WHERE email = %s"
     result = cls.ejecutar(query, (email,), fetch=True, dict_cursor=True)
     return result[0] if result else None
+  
+  @classmethod
+  def buscar_por_nombre_similar(cls, nombre_parcial, rol='cliente', solo_activos=True):
+    """
+    Busca usuarios por coincidencia parcial en el nombre o apellido
+    para un rol específico (por defecto, 'cliente').
+    
+    Args:
+      nombre_parcial (str): Parte del nombre o apellido a buscar.
+      rol (str): El rol del usuario a buscar.
+      solo_activos (bool): Si solo debe buscar usuarios activos.
+        
+    Returns:
+      list[dict]: Lista de diccionarios de usuarios coincidentes.
+    """
+    
+    # Usamos LOWER() y LIKE con comodines % para buscar coincidencias
+    query = f"""
+      SELECT id, nombre, apellido, email, rol, activo 
+      FROM {cls.TABLA} 
+      WHERE rol = %s
+        AND (LOWER(nombre) LIKE %s OR LOWER(apellido) LIKE %s)
+    """
+    
+    # Valor para el operador LIKE: '%parte_del_nombre%'
+    nombre_like = f"%{nombre_parcial.lower()}%"
+    
+    params = [rol, nombre_like, nombre_like]
+    
+    if solo_activos:
+      query += " AND activo = TRUE"
+
+    query += " ORDER BY nombre, apellido ASC"
+    
+    return cls.ejecutar(query, params, fetch=True, dict_cursor=True)
 
   @classmethod
   def actualizar(cls, id, nombre=None, apellido=None, email=None, rol=None, activo=None):
