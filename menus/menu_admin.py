@@ -13,6 +13,7 @@ def mostrar_menu_admin(user_info):
   
   # Bucle principal del menú
   while True:
+    console.print()
     console.print(Panel(f"[bold white]Menú Principal de Administrador[/bold white]",
       title=f"Bienvenido/a, {user_info.get('nombre')}", expand=False))
 

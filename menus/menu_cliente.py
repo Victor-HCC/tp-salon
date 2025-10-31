@@ -9,9 +9,10 @@ console = Console()
 def mostrar_menu_cliente(user_info):
   """Menú principal del cliente"""
   while True:
+    console.print()
     console.print(Panel(
       f"[bold white]Menú de Cliente[/bold white]",
-      title=f"Bienvenido, {user_info.get('nombre')}",
+      title=f"Bienvenido/a, {user_info.get('nombre')}",
       expand=False
     ))
 

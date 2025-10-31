@@ -155,7 +155,13 @@ def solicitar_turno(user_id):
   
   # Guardar en la base de datos
   try:
-    turno_id = Turno.crear(user_id, turno_final, total)
+    if Turno.verificar_disponibilidad(turno_final):
+      turno_id = Turno.crear(user_id, turno_final, total)
+    else:
+      # La capacidad está al máximo
+      console.print()
+      console.print("[bold red]❌ Lo sentimos, el horario seleccionado ya está lleno (3 turnos). Por favor, elige otra hora.[/bold red]")
+      return
 
     for s in servicios_seleccionados:
       TurnoServicio.agregar_servicio(turno_id, s["id"], s["precio"])
@@ -164,6 +170,7 @@ def solicitar_turno(user_id):
     return
     
   # Resumen final
+  console.print()
   console.print(f"[green]✅ Turno confirmado exitosamente![/green]")
   console.print(f"Fecha: [bold]{turno_final.strftime('%d/%m/%Y %H:%M')}[/bold]")
   console.print(f"Total: [bold cyan]$ {total:.2f}[/bold cyan]")

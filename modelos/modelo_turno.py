@@ -112,6 +112,44 @@ class Turno(ModeloBase):
     """Actualiza el total del turno."""
     query = f"UPDATE {cls.TABLA} SET total = %s WHERE id = %s"
     return cls.ejecutar(query, (total, turno_id))
+  
+  @classmethod
+  def verificar_disponibilidad(cls, fecha_hora, limite_turnos=3):
+    """
+    Verifica si hay capacidad para crear un nuevo turno en una fecha_hora específica.
+    
+    Cuenta el número de turnos existentes (PENDIENTES) en el mismo 
+    minuto y verifica si es menor que el límite.
+    
+    Args:
+      fecha_hora (datetime): La fecha y hora exacta del turno propuesto.
+      limite_turnos (int): El número máximo de turnos permitidos por slot.
+        
+    Returns:
+      bool: True si hay disponibilidad (contador < limite), False en caso contrario.
+    """
+    
+    # 1. Convertir la fecha_hora a un string para la consulta SQL
+    # La base de datos necesita la fecha y hora exactas para la comparación.
+    fecha_hora_str = fecha_hora.strftime('%Y-%m-%d %H:%M:%S')
+    
+    # 2. La consulta cuenta los turnos activos (no cancelados ni realizados)
+    # en la fecha_hora exacta.
+    query = f"""
+        SELECT 
+          COUNT(id) AS turnos_ocupados
+        FROM {cls.TABLA}
+        WHERE fecha_hora = %s
+          AND estado = 'pendiente'
+    """
+    
+    rows = cls.ejecutar(query, (fecha_hora_str,), fetch=True, dict_cursor=True)
+    
+    # Si la consulta devuelve un resultado, extraemos el contador
+    turnos_ocupados = rows[0]['turnos_ocupados'] if rows and rows[0]['turnos_ocupados'] is not None else 0
+    
+    # 3. Verificar si la cuenta es menor que el límite
+    return turnos_ocupados < limite_turnos
 
   @classmethod
   def eliminar(cls, turno_id):

@@ -210,10 +210,12 @@ def seleccionar_dia_y_hora(data_horas_ocupadas=None):
   dias_validos = {} # { "Lunes 28/10": datetime.date(2025, 10, 28), ... }
   hoy = datetime.now().date()
   
-  # Iterar sobre los próximos 5 días, empezando mañana (i=1)
-  for i in range(1, 6):
-    fecha = hoy + timedelta(days=i)
-    
+  # Iterar para obtener los próximos 5 días laborables, empezando mañana (i=1)
+  count = 1 # para contar los 5 dias disponibles para elegir turno
+  j = 1 # para controlar los dias
+  while count < 6:
+    fecha = hoy + timedelta(days=j)
+  
     # 0=Lunes, 6=Domingo. Excluimos el Domingo (fecha.weekday() == 6).
     if fecha.weekday() < 6:
       # Formato de presentación: "Lunes 28/10"
@@ -223,7 +225,11 @@ def seleccionar_dia_y_hora(data_horas_ocupadas=None):
       # Formato de la opción en la CLI
       opcion_key = f"{nombre_dia} {display_fecha}"
       dias_validos[opcion_key] = fecha
-
+      
+      count += 1 # Solo contamos si el día es válido (no es domingo)
+    
+    j += 1 # Siempre avanzamos al siguiente día
+  
   try:
     # Pide al usuario que seleccione el día
     dia_seleccionado_str = inquirer.select(
