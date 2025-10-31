@@ -5,6 +5,7 @@ from InquirerPy import inquirer
 
 from menus.menu_admin import mostrar_menu_admin
 from menus.menu_cliente import mostrar_menu_cliente
+from menus.menu_recepcionista import mostrar_menu_recepcionista
 
 from funciones.login import autenticar
 
@@ -33,9 +34,7 @@ if opcion == "Acceder":
     if rol == 'admin':
       mostrar_menu_admin(user_info) # Llama a la función del menú de admin
     elif rol == 'recepcionista':
-      mostrar_menu_recepcionista(user_info) # Llama al menú de recepcionista TO-DO
-    elif rol == 'cajero':
-      mostrar_menu_cajero(user_info)
+      mostrar_menu_recepcionista(user_info) # Llama al menú de recepcionista
     elif rol == 'cliente':
       mostrar_menu_cliente(user_info)
     else:

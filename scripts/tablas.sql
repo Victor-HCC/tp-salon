@@ -8,7 +8,7 @@ CREATE TABLE Usuario (
   apellido VARCHAR(100) NOT NULL,
   email VARCHAR(255) NOT NULL UNIQUE, -- Único para login
   password_hash VARCHAR(255) NOT NULL, -- Contraseña hasheada
-  rol ENUM('admin', 'peluquero', 'recepcionista', 'cajero', 'cliente') NOT NULL,
+  rol ENUM('admin', 'peluquero', 'recepcionista', 'cliente') NOT NULL,
   activo BOOLEAN DEFAULT TRUE -- Para desactivar cuentas en lugar de eliminarlas
 );
 
@@ -31,8 +31,7 @@ CREATE TABLE Turno (
   id INT AUTO_INCREMENT PRIMARY KEY,
   cliente_id INT NOT NULL,
   fecha_hora DATETIME NOT NULL,
-  estado ENUM('pendiente', 'confirmado', 'cancelado') NOT NULL DEFAULT 'pendiente',
-  pagado BOOLEAN DEFAULT FALSE,
+  estado ENUM('pendiente', 'confirmado', 'realizado', 'cancelado') NOT NULL DEFAULT 'pendiente',
   total DECIMAL(10, 2) DEFAULT 0.00,
   fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   FOREIGN KEY (cliente_id) REFERENCES Usuario(id) ON DELETE RESTRICT
