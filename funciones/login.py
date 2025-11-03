@@ -7,7 +7,13 @@ console = Console()
 
 def autenticar():
   console.print("[bold]Ingresa tus credenciales: [/bold]")
-  email = input("Email: ")
-  password = inquirer.secret(message="Contraseña:").execute().strip()
+  try:
+    email = input("Email: ")
+    password = inquirer.secret(message="Contraseña:").execute().strip()
+  except KeyboardInterrupt:
+    console.print()
+    console.print("\n[bold yellow]Operación cancelada por el usuario.[/bold yellow]")
+    console.print()
+    return None
   
   return ModeloBase.autenticar(email, password)

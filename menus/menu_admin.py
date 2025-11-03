@@ -35,4 +35,5 @@ def mostrar_menu_admin(user_info):
       menu_reportes()
     elif opcion.startswith("🚪"):
       console.print("[bold cyan]Cerrando sesión de Administrador...[/bold cyan]")
+      console.print()
       break # Sale del bucle While y regresa a main.py (que luego hace exit())

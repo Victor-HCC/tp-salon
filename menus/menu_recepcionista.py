@@ -44,4 +44,5 @@ def mostrar_menu_recepcionista(user_info):
       listar_servicios_recepcion() 
     elif opcion.startswith("🚪"):
       console.print("[bold cyan]Cerrando sesión de Recepcionista...[/bold cyan]")
+      console.print()
       break # Sale del bucle While

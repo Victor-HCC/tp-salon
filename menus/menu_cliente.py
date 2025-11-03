@@ -37,4 +37,5 @@ def mostrar_menu_cliente(user_info):
       cambiar_contraseña(user_info["id"])
     elif opcion.startswith("⬅️"):
       console.print("[bold cyan]Cerrando sesión...[/bold cyan]")
+      console.print()
       break
