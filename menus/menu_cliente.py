@@ -11,21 +11,25 @@ def mostrar_menu_cliente(user_info):
   while True:
     console.print()
     console.print(Panel(
-      f"[bold white]Menú de Cliente[/bold white]",
+      f"[bold white]Menú de cliente[/bold white]",
       title=f"Bienvenido/a, {user_info.get('nombre')}",
       expand=False
     ))
 
-    opcion = inquirer.select(
-      message="¿Qué deseas hacer?",
-      choices=[
-        "📅 Solicitar turno",
-        "👀 Ver mis turnos",
-        "❌ Cancelar un turno",
-        "🔒 Cambiar contraseña",
-        "⬅️ Cerrar sesión"
-      ]
-    ).execute()
+    try:  
+      opcion = inquirer.select(
+        message="¿Qué deseas hacer?",
+        choices=[
+          "📅 Solicitar turno",
+          "👀 Ver mis turnos",
+          "❌ Cancelar un turno",
+          "🔒 Cambiar contraseña",
+          "⬅️ Cerrar sesión"
+        ]
+      ).execute()
+    except KeyboardInterrupt:
+      console.print("[yellow]Operación cancelada por el usuario. Cerrando sesión...[/yellow]")
+      return
 
     if opcion.startswith("📅"):
       solicitar_turno(user_info["id"])

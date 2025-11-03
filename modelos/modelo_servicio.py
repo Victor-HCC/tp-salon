@@ -13,9 +13,12 @@ class Servicio(ModeloBase):
     return cls.ejecutar(query, (nombre, descripcion, precio, duracion_estimada), last_id=True)
 
   @classmethod
-  def listar_todos(cls):
+  def listar_todos(cls, solo_activos=False):
     """Obtiene todos los servicios."""
     query = f"SELECT * FROM {cls.TABLA}"
+    
+    if solo_activos:
+      query += " WHERE activo = True"
     return cls.ejecutar(query, fetch=True, dict_cursor=True)
 
   @classmethod

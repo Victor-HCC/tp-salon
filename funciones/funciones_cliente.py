@@ -110,10 +110,12 @@ def solicitar_turno(user_id):
     print()
     return
   
+  console.print()
   console.print(f"[green]Turno:[/green] {turno_final.strftime('%A %d/%m/%Y a las %H:%M')}")
+  console.print()
   
   # Seleccionar servicios
-  servicios = Servicio.listar_todos()
+  servicios = Servicio.listar_todos(solo_activos=True)
   servicios_seleccionados = seleccionar_servicios(servicios)
   
   if not servicios_seleccionados:
@@ -138,6 +140,7 @@ def solicitar_turno(user_id):
   console.print(tabla)
   console.print(f"[bold cyan]Total a pagar: $ {total:.2f}[/bold cyan]")
   console.print(f"[bold]Duración estimada total: {duracion_total} minutos[/bold]")
+  console.print()
   
   # Confirmar o cancelar
   try:

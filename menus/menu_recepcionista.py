@@ -27,7 +27,7 @@ def mostrar_menu_recepcionista(user_info):
         ]
       ).execute()
     except KeyboardInterrupt:
-      console.print("[yellow]Operación cancelada por el usuario. Cerrando la aplicación...[/yellow]")
+      console.print("[yellow]Operación cancelada por el usuario. Cerrando sesión...[/yellow]")
       return
 
     if opcion.startswith("📅"):

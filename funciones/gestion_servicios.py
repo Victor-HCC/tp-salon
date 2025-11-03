@@ -282,7 +282,6 @@ def menu_gestion_servicios():
           "➕ Crear nuevo servicio",
           "✏️ Editar servicio",
           "📋 Listar servicios",
-          "🚫 Desactivar servicio",
           "⬅️ Volver al menú principal"
         ]
       ).execute()
