@@ -76,7 +76,7 @@ class ModeloBase:
   @classmethod
   def autenticar(cls, email, password):
     # obtener usuario por email
-    rows = cls.ejecutar(f"SELECT * FROM Usuario WHERE email = %s", (email,), fetch=True, dict_cursor=True)
+    rows = cls.ejecutar(f"SELECT * FROM Usuario WHERE email = %s AND activo = True", (email,), fetch=True, dict_cursor=True)
     if not rows:
       return None  # usuario no existe
 

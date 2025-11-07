@@ -58,7 +58,9 @@ def crear_usuario():
 
   try:
     nuevo_id = Usuario.crear(nombre, apellido, email, password, rol)
+    console.print()
     console.print(f"[green]Usuario creado exitosamente con ID: {nuevo_id}[/green]")
+    console.print()
   except Exception as e:
     console.print(f"[red]Error al crear usuario:[/red] {e}")
 
@@ -162,13 +164,17 @@ def editar_usuario():
   # --- PASO 3: Actualizar ---
   
   if not datos_nuevos:
+    console.print()
     console.print("[bold yellow]No se detectaron cambios. No se realizó ninguna actualización.[/bold yellow]")
+    console.print()
     return
       
   try:
     # Llamar a tu función 'actualizar' con el ID y los nuevos datos
     Usuario.actualizar(usuario_actual['id'], **datos_nuevos)
+    console.print()
     console.print("[bold green]Datos del usuario actualizados exitosamente.[/bold green]")
+    console.print()
       
   except Exception as e:
     console.print(f"[bold red]Error al actualizar usuario:[/bold red] {e}")

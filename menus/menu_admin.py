@@ -17,15 +17,20 @@ def mostrar_menu_admin(user_info):
     console.print(Panel(f"[bold white]Menú Principal de Administrador[/bold white]",
       title=f"Bienvenido/a, {user_info.get('nombre')}", expand=False))
 
-    opcion = inquirer.select(
-      message="Tareas de Administración:",
-      choices=[
-        "👥 Gestión de Usuarios",
-        "💇 Gestión de Servicios",
-        "📊 Ver Reportes de Facturación",
-        "🚪 Cerrar Sesión"
-      ]
-    ).execute()
+    try:
+      opcion = inquirer.select(
+        message="Tareas de Administración:",
+        choices=[
+          "👥 Gestión de Usuarios",
+          "💇 Gestión de Servicios",
+          "📊 Ver Reportes de Facturación",
+          "🚪 Cerrar Sesión"
+        ]
+      ).execute()
+    except KeyboardInterrupt:
+      console.print("[yellow]Operación cancelada por el usuario. Cerrando sesión...[/yellow]")
+      console.print()
+      return
 
     if opcion.startswith("👥"):
       menu_gestion_usuarios()

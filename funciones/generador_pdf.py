@@ -33,7 +33,7 @@ def generar_ticket_pdf(turno_info: dict, detalle_servicios: list):
   
   # 2. Encabezado del Ticket
   c.setFont("Helvetica-Bold", 16)
-  c.drawString(inch, y, "SALÓN DE BELLEZA [NOMBRE DEL SALÓN]")
+  c.drawString(inch, y, "SALÓN DE BELLEZA")
   y -= line_height * 1.5
   
   c.setFont("Helvetica-Bold", 12)

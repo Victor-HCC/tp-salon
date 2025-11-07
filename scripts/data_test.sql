@@ -11,9 +11,9 @@
 INSERT INTO Usuario (nombre, apellido, email, password_hash, rol) VALUES 
 ('Laura', 'Recepcionista', 'laura@salon.com', '$2b$12$bym078Of1msOYnm0jaD9hORISitVrSekpzRW.kTta2imkN21Ee48C', 'recepcionista');
 
--- Cajero (ID: 3)
+-- Cliente (ID: 3)
 INSERT INTO Usuario (nombre, apellido, email, password_hash, rol) VALUES 
-('Andres', 'Cajero', 'andres@salon.com', '$2b$12$bym078Of1msOYnm0jaD9hORISitVrSekpzRW.kTta2imkN21Ee48C', 'cajero');
+('Andres', 'Cajero', 'andres@cliente.com', '$2b$12$bym078Of1msOYnm0jaD9hORISitVrSekpzRW.kTta2imkN21Ee48C', 'cliente');
 
 -- Peluqueros
 INSERT INTO Usuario (nombre, apellido, email, password_hash, rol) VALUES 

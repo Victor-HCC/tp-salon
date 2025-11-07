@@ -142,11 +142,17 @@ def obtener_entrada_valida(message, validator_func, error_message, is_secret=Fal
   default_str = default if default is not None else ""
   
   while True:
-    # 1. Determinar el prompt a usar (secret o text) y aplicar el default.
-    if is_secret:
-      entrada = inquirer.secret(message=message, default=default_str).execute().strip()
-    else:
-      entrada = inquirer.text(message=message, default=default_str).execute().strip()
+    try:
+      # 1. Determinar el prompt a usar (secret o text) y aplicar el default.
+      if is_secret:
+        entrada = inquirer.secret(message=message, default=default_str).execute().strip()
+      else:
+        entrada = inquirer.text(message=message, default=default_str).execute().strip()
+    except KeyboardInterrupt:
+      console.print()
+      console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
+      console.print()
+      return
         
     # 2. Lógica de Manejo de la Entrada
     
