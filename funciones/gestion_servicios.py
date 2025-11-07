@@ -19,12 +19,17 @@ def crear_servicio():
     error_message="Nombre inválido"
   )
   
+  if nombre is None: return
+  
   # Obtener y validar descripcion
   descripcion = obtener_entrada_valida(
     message="Descripción (opcional):",
     validator_func=lambda x: True,
-    error_message="Descripción inválida."
+    error_message="Descripción inválida.",
+    allow_empty=True
   )
+  
+  if descripcion is None: return
   
   # Obtener y validar precio
   precio = obtener_entrada_valida(
@@ -33,6 +38,8 @@ def crear_servicio():
     error_message="Ingresa un precio válido."
   )
   
+  if precio is None: return
+  
   # Obtener y validar duracion_estimada
   duracion_estimada = obtener_entrada_valida(
     message="Duración estimada (min):",
@@ -40,14 +47,18 @@ def crear_servicio():
     error_message="Ingresa una duración válida, debe ser mayor a cero."
   )
   
+  if duracion_estimada is None: return
+  
   precio = Decimal(precio)
   duracion_estimada = int(duracion_estimada)
   
-  console.print((nombre, descripcion, precio, duracion_estimada))
+  #console.print((nombre, descripcion, precio, duracion_estimada))
   
   try:
     nuevo_id = Servicio.crear(nombre, descripcion, precio, duracion_estimada)
+    console.print()
     console.print(f"[green]Servicio creado exitosamente con ID: {nuevo_id}[/green]")
+    console.print()
   except Exception as e:
     console.print(f"[red]Error al crear servicio:[/red] {e}")
     
@@ -128,6 +139,10 @@ def editar_servicio():
     error_message="Nombre inválido. Debe contener al menos 2 caracteres y solo letras/espacios/números.",
     default=servicio_actual['nombre']
   )
+  
+  if nuevo_nombre is None: 
+    return
+  
   if nuevo_nombre != servicio_actual['nombre']:
     datos_nuevos['nombre'] = nuevo_nombre
 
@@ -136,8 +151,13 @@ def editar_servicio():
     message="Descripción (Opcional):",
     validator_func=lambda x: True,
     error_message="Descripción inválida. Solo caracteres alfanuméricos y puntuación básica.",
-    default=servicio_actual.get('descripcion', '') or '' # Usamos .get por si es NULL y aseguramos un string
+    default=servicio_actual.get('descripcion', '') or '', # Usamos .get por si es NULL y aseguramos un string
+    allow_empty=True
   )
+  
+  if nueva_descripcion is None:
+    return
+  
   # Si la descripción ingresada es vacía, guardamos un NULL 
   descripcion_a_guardar = nueva_descripcion.strip() or None
   if descripcion_a_guardar != servicio_actual.get('descripcion'):
@@ -150,6 +170,10 @@ def editar_servicio():
     error_message="Precio inválido. Debe ser un número positivo (ej: 15.00 o 15,00).",
     default=str(precio_actual_decimal) # El default debe ser una CADENA del valor
   )
+  
+  if precio_str_validado is None: 
+    return
+  
   # Conversión y verificación del cambio
   nuevo_precio_decimal = Decimal(precio_str_validado)
   if nuevo_precio_decimal is not None and nuevo_precio_decimal != precio_actual_decimal:
@@ -163,6 +187,10 @@ def editar_servicio():
     error_message="Duración inválida. Debe ser un número entero positivo de minutos.",
     default=str(duracion_actual_int)
   )
+  
+  if duracion_str_validada is None: 
+    return
+  
   # Conversión y verificación del cambio
   try:
     nueva_duracion_int = int(duracion_str_validada)
@@ -173,14 +201,20 @@ def editar_servicio():
       pass
 
   # 5. Estado Activo (Booleano)
-  opcion_activo = inquirer.select(
-    message="Estado:",
-    choices=[
-      {"name": "Activo (Visible y disponible)", "value": True},
-      {"name": "Inactivo (Oculto)", "value": False}
-    ],
-    default=activo_actual_bool
-  ).execute()
+  try:
+    opcion_activo = inquirer.select(
+      message="Estado:",
+      choices=[
+        {"name": "Activo (Visible y disponible)", "value": True},
+        {"name": "Inactivo (Oculto)", "value": False}
+      ],
+      default=activo_actual_bool
+    ).execute()
+  except KeyboardInterrupt:
+    console.print()
+    console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
+    console.print()
+    return
   
   if opcion_activo != activo_actual_bool:
     datos_nuevos['activo'] = opcion_activo

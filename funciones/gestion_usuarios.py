@@ -8,7 +8,9 @@ console = Console()
 
 def verificar_email_unico(email):
   if Usuario.obtener_por_email(email):
+    console.print()
     console.print(f"[yellow]Ya existe una cuenta con ese email.[/yellow]")
+    console.print()
     return False
   else:
     return True
@@ -23,6 +25,8 @@ def crear_usuario():
     error_message="Nombre inválido. Solo debe contener letras y tener al menos 2 caracteres."
   )
   
+  if nombre is None: return
+  
   # Obtener y validar apellido
   apellido = obtener_entrada_valida(
     message="Apellido:",
@@ -30,14 +34,17 @@ def crear_usuario():
     error_message="Apellido inválido. Solo debe contener letras y tener al menos 2 caracteres."
   )
   
+  if apellido is None: return
+  
   # Obtener y validar email
   email = obtener_entrada_valida(
     message="Email:",
     validator_func=validar_email,
     error_message="Email inválido. Asegúrate de usar un formato correcto (ej: usuario@dominio.com)."
-  ).lower() # Se convierte a minúsculas después de la validación
+  )
   
-  
+  if email is None: return
+  email = email.lower() # Se convierte a minúsculas después de la validación
 
   # Obtener y validar contraseña
   password = obtener_entrada_valida(
@@ -46,12 +53,20 @@ def crear_usuario():
     error_message="La contraseña debe tener al menos 6 caracteres, una mayúscula y un número.",
     is_secret=True
   )
+  
+  if password is None: return
 
   # Mostrar roles posibles
-  rol = inquirer.select(
-    message="Selecciona el rol del usuario:",
-    choices=["admin", "recepcionista", "cajero", "cliente"]
-  ).execute()
+  try:
+    rol = inquirer.select(
+      message="Selecciona el rol del usuario:",
+      choices=["admin", "recepcionista", "cajero", "cliente"]
+    ).execute()
+  except KeyboardInterrupt:
+    console.print()
+    console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
+    console.print()
+    return
 
   # Verificación de email duplicado
   if not verificar_email_unico(email): return
@@ -120,6 +135,9 @@ def editar_usuario():
     default=usuario_actual['nombre']
   )
   
+  if nuevo_nombre is None: 
+    return # Aborta si se presiona CTRL+C
+  
   if nuevo_nombre != usuario_actual['nombre']:
     datos_nuevos['nombre'] = nuevo_nombre
 
@@ -131,6 +149,9 @@ def editar_usuario():
     default=usuario_actual['apellido']
   )
   
+  if nuevo_apellido is None: 
+    return
+  
   if nuevo_apellido != usuario_actual['apellido']:
     datos_nuevos['apellido'] = nuevo_apellido
       
@@ -140,18 +161,30 @@ def editar_usuario():
     validator_func=validar_email,
     error_message="Email inválido. Asegúrate de usar un formato correcto (ej: usuario@dominio.com).",
     default=usuario_actual['email']
-  ).lower()
+  )
+  
+  if nuevo_email is None: 
+    return
+  
+  nuevo_email = nuevo_email.lower()
   
   # if nuevo_email != usuario_actual['email']:
   #   datos_nuevos['email'] = nuevo_email
 
   # Rol (Usando select con el valor actual como default)
   roles = ["admin", "recepcionista", "cajero", "cliente"]
-  nuevo_rol = inquirer.select(
-    message=f"Rol:",
-    choices=roles,
-    default=usuario_actual['rol']
-  ).execute()
+  
+  try:
+    nuevo_rol = inquirer.select(
+      message=f"Rol:",
+      choices=roles,
+      default=usuario_actual['rol']
+    ).execute()
+  except KeyboardInterrupt:
+    console.print()
+    console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
+    console.print()
+    return
   
   if nuevo_rol != usuario_actual['rol']:
     datos_nuevos['rol'] = nuevo_rol

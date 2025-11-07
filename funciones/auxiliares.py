@@ -132,11 +132,13 @@ def validar_password(password: str) -> bool:
     else:
       console.print(f"[red]{error_message}[/red]")
       
-def obtener_entrada_valida(message, validator_func, error_message, is_secret=False, default=None):
+def obtener_entrada_valida(message, validator_func, error_message, is_secret=False, default=None, allow_empty=False):
   """
   Bucle genérico para solicitar entrada al usuario hasta que la validación pase.
 
   El valor por defecto (default) permite al usuario presionar Enter para aceptarlo.
+  
+  El parámetro 'allow_empty' es para campos opcionales
   """
   
   default_str = default if default is not None else ""
@@ -148,11 +150,17 @@ def obtener_entrada_valida(message, validator_func, error_message, is_secret=Fal
         entrada = inquirer.secret(message=message, default=default_str).execute().strip()
       else:
         entrada = inquirer.text(message=message, default=default_str).execute().strip()
+        
+      if entrada is None:
+        console.print()
+        console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
+        console.print()
+        return None
     except KeyboardInterrupt:
       console.print()
       console.print(f"[yellow]Operación cancelada por el usuario.[/yellow]")
       console.print()
-      return
+      return None
         
     # 2. Lógica de Manejo de la Entrada
     
@@ -167,7 +175,11 @@ def obtener_entrada_valida(message, validator_func, error_message, is_secret=Fal
     # Si la entrada está completamente vacía y NO estamos en modo edición (default es None), esto es un error.
     # Nota: Usamos la función de validación para manejar si la entrada vacía es válida o no.
     
-    # 3. Validación
+    # 3. Manejo de Entrada Vacía (Solo para campos opcionales)
+    if not entrada and allow_empty:
+      return "" # Devuelve CADENA VACÍA, lo que indica INTENCIÓN de dejar vacío
+    
+    # 4. Validación
     # La validación se aplica a la entrada. Si la validación falla, se muestra el error.
     if validator_func(entrada):
       return entrada
