@@ -175,6 +175,7 @@ def solicitar_turno(user_id):
   # Resumen final
   console.print()
   console.print(f"[green]✅ Turno confirmado exitosamente![/green]")
+  console.print(f"ID Turno: [bold cyan]{turno_id}[/bold cyan]")
   console.print(f"Fecha: [bold]{turno_final.strftime('%d/%m/%Y %H:%M')}[/bold]")
   console.print(f"Total: [bold cyan]$ {total:.2f}[/bold cyan]")
   
@@ -193,6 +194,7 @@ def listar_turnos_cliente(user_id):
   )
   
   # 1. Definir Columnas
+  tabla.add_column("ID", style="bold cyan", justify="center")
   tabla.add_column("📅 Fecha y Hora", style="cyan", justify="left")
   tabla.add_column("Servicios", style="white", justify="left")
   tabla.add_column("💰 Total", style="green", justify="right")
@@ -208,6 +210,7 @@ def listar_turnos_cliente(user_id):
     
     # Agregar la fila a la tabla
     tabla.add_row(
+      str(turno['id']),
       fecha_str,
       turno['servicios'], # Esto viene como cadena de GROUP_CONCAT
       total_str

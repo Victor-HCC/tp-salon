@@ -48,7 +48,7 @@ INSERT INTO Servicio (nombre, descripcion, precio, duracion_estimada, activo) VA
 
 -- Insertar el Turno (primero el registro principal)
 INSERT INTO Turno (cliente_id, fecha_hora, estado, total) VALUES
-(7, '2025-11-05 10:00:00', 'pendiente', 800.00); -- Asumimos que el corte cuesta 800.00
+(7, '2025-11-19 10:00:00', 'pendiente', 800.00); -- Asumimos que el corte cuesta 800.00
 
 -- Insertar el Servicio asociado al Turno (asumiendo que Corte Caballero tiene ID: 1)
 -- NOTA: Debes verificar los IDs de los servicios insertados en tu BD.
