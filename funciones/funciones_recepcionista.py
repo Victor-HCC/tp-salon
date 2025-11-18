@@ -73,7 +73,7 @@ def gestion_turnos():
           console.print(f"[bold yellow]No existe un usuario registrado con ese email.[/bold yellow]")
           return
         
-        turnos_pendientes = Turno.listar('pendiente', user_info.get('id')) 
+        turnos_pendientes = Turno.listar('pendiente', user_info.get('id'),True) 
       except Exception as e:
         console.print(f"[bold red][ERROR]Error al acceder a la base de datos: {e}[/bold red]")
         return
