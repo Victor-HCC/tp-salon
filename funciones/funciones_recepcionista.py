@@ -99,6 +99,9 @@ def gestion_turnos():
       
       turno_a_confirmar = opciones_mapeadas.get(turno_seleccionado_str)
     except KeyboardInterrupt:
+        console.print()
+        console.print(f"[yellow]Operación de confirmación cancelada.[/yellow]")
+        console.print()
         return
   # --- PASO FINAL: Confirmar el Turno Encontrado ---
   if turno_a_confirmar:
